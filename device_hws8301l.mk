@@ -20,10 +20,17 @@ endif
 PRODUCT_COPY_FILES += \
     $(LOCAL_KERNEL):kernel
 
+    
+# Boot ramdisk
 PRODUCT_COPY_FILES += \
-   device/huawei/hws8301l/recovery/ueventd.hi6620oem.rc:recovery/root/ueventd.hi6620oem.rc \
-   device/huawei/hws8301l/recovery/fstab.hi6620oem:recovery/root/fstab.hi6620oem \
-   device/huawei/hws8301l/recovery/twrp.fstab:recovery/root/etc/twrp.fstab
+    device/huawei/hws8301l/recovery/fstab.hi6620oem:root/fstab.hi6620oem \
+    device/huawei/hws8301l/recovery/ueventd.hi6620oem.rc:root/ueventd.hi6620oem.rc \
+    device/huawei/hws8301l/recovery/twrp.fstab:recovery/root/etc/twrp.fstab 
+    
+PRODUCT_COPY_FILES += \   
+    device/huawei/hws8301l/recovery/ueventd.hi6620oem.rc:recovery/root/ueventd.hi6620oem.rc \
+    device/huawei/hws8301l/recovery/fstab.hi6620oem:recovery/root/fstab.hi6620oem \
+    device/huawei/hws8301l/recovery/twrp.fstab:recovery/root/etc/twrp.fstab
 
 PRODUCT_COPY_FILES += \
    device/huawei/hws8301l/recovery/system/bin/linker:recovery/root/system/bin/linker \
@@ -68,7 +75,7 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 # Prime spacific overrides
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.product.manufacturer=HUAWEI \
-    ro.product.model=MediaPad M1
+    ro.product.model=MediaPad M1 8.0
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := cm_hws8301l
