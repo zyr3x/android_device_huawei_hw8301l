@@ -53,7 +53,7 @@ ADDITIONAL_DEFAULT_PROPERTIES += ro.allow.mock.location=1
 ADDITIONAL_DEFAULT_PROPERTIES += persist.sys.usb.config=mass_storage
 
 # Graphics
-BOARD_EGL_CFG := device/huawei/hw8301/prebuilt/lib/egl/egl.cfg
+BOARD_EGL_CFG := device/huawei/hws8301l/prebuilt/lib/egl/egl.cfg
 USE_OPENGL_RENDERER := true
 
 # Kernel
@@ -80,14 +80,14 @@ BOARD_HAS_SDCARD_INTERNAL := true
 RECOVERY_FSTAB_VERSION := 2
 BOARD_FLASH_BLOCK_SIZE := 131072
 BOARD_HAS_LARGE_FILESYSTEM := true
-#BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/huawei/hw8301l/recovery/recovery_keys.c
-TARGET_RECOVERY_FSTAB := device/huawei/hw8301/recovery/recovery.fstab
+#BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/huawei/hws8301ll/recovery/recovery_keys.c
+TARGET_RECOVERY_FSTAB := device/huawei/hws8301l/recovery/recovery.fstab
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
 
 BOARD_RECOVERY_SWIPE := true
 
-TARGET_PREBUILT_RECOVERY_KERNEL := device/huawei/hw8301/kernel
-TARGET_RECOVERY_INITRC := device/huawei/hw8301/recovery/init.rc
+TARGET_PREBUILT_RECOVERY_KERNEL := device/huawei/hws8301l/kernel
+TARGET_RECOVERY_INITRC := device/huawei/hws8301l/recovery/init.rc
 
 #TWRP
 

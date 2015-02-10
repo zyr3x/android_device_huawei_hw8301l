@@ -1,3 +1,1 @@
-
-add_lunch_combo full_hw8301-userdebug
-add_lunch_combo omni_hw8301-userdebug
+add_lunch_combo cm_hws8301l-userdebug
