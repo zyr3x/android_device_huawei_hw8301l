@@ -25,12 +25,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     device/huawei/hws8301l/recovery/fstab.hi6620oem:root/fstab.hi6620oem \
     device/huawei/hws8301l/recovery/ueventd.hi6620oem.rc:root/ueventd.hi6620oem.rc \
-    device/huawei/hws8301l/recovery/twrp.fstab:recovery/root/etc/twrp.fstab 
-    
-PRODUCT_COPY_FILES += \   
+    device/huawei/hws8301l/recovery/twrp.fstab:recovery/root/etc/twrp.fstab \
     device/huawei/hws8301l/recovery/ueventd.hi6620oem.rc:recovery/root/ueventd.hi6620oem.rc \
     device/huawei/hws8301l/recovery/fstab.hi6620oem:recovery/root/fstab.hi6620oem \
-    device/huawei/hws8301l/recovery/twrp.fstab:recovery/root/etc/twrp.fstab
+    device/huawei/hws8301l/recovery/twrp.fstab:recovery/root/etc/twrp.fstab  
 
 PRODUCT_COPY_FILES += \
    device/huawei/hws8301l/recovery/system/bin/linker:recovery/root/system/bin/linker \
