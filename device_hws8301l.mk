@@ -23,21 +23,21 @@ PRODUCT_COPY_FILES += \
     
 # Boot ramdisk
 PRODUCT_COPY_FILES += \
-    device/huawei/hws8301l/recovery/fstab.hi6620oem:root/fstab.hi6620oem \
-    device/huawei/hws8301l/recovery/ueventd.hi6620oem.rc:root/ueventd.hi6620oem.rc \
+    device/huawei/hws8301l/recovery/fstab.hws8301l:root/fstab.hws8301l \
+    device/huawei/hws8301l/recovery/ueventd.hws8301l.rc:root/ueventd.hws8301l.rc \
     device/huawei/hws8301l/recovery/twrp.fstab:recovery/root/etc/twrp.fstab \
-    device/huawei/hws8301l/recovery/ueventd.hi6620oem.rc:recovery/root/ueventd.hi6620oem.rc \
-    device/huawei/hws8301l/recovery/fstab.hi6620oem:recovery/root/fstab.hi6620oem \
+    device/huawei/hws8301l/recovery/ueventd.hws8301l.rc:recovery/root/ueventd.hws8301l.rc \
+    device/huawei/hws8301l/recovery/fstab.hws8301l:recovery/root/fstab.hws8301l \
     device/huawei/hws8301l/recovery/twrp.fstab:recovery/root/etc/twrp.fstab  
 
-PRODUCT_COPY_FILES += \
-   device/huawei/hws8301l/recovery/system/bin/linker:recovery/root/system/bin/linker \
-   device/huawei/hws8301l/recovery/system/lib/libc.so:recovery/root/system/lib/libc.so \
-   device/huawei/hws8301l/recovery/system/lib/libdl.so:recovery/root/system/lib/libdl.so \
-   device/huawei/hws8301l/recovery/system/lib/liblog.so:recovery/root/system/lib/liblog.so \
-   device/huawei/hws8301l/recovery/system/lib/libm.so:recovery/root/system/lib/libm.so \
-   device/huawei/hws8301l/recovery/system/lib/libstdc++.so:recovery/root/system/lib/libstdc++.so \
-   device/huawei/hws8301l/recovery/system/lib/libz.so:recovery/root/system/lib/libz.so
+#PRODUCT_COPY_FILES += \
+#   device/huawei/hws8301l/recovery/system/bin/linker:recovery/root/system/bin/linker \
+#   device/huawei/hws8301l/recovery/system/lib/libc.so:recovery/root/system/lib/libc.so \
+#   device/huawei/hws8301l/recovery/system/lib/libdl.so:recovery/root/system/lib/libdl.so \
+#   device/huawei/hws8301l/recovery/system/lib/liblog.so:recovery/root/system/lib/liblog.so \
+#   device/huawei/hws8301l/recovery/system/lib/libm.so:recovery/root/system/lib/libm.so \
+#   device/huawei/hws8301l/recovery/system/lib/libstdc++.so:recovery/root/system/lib/libstdc++.so \
+#   device/huawei/hws8301l/recovery/system/lib/libz.so:recovery/root/system/lib/libz.so
 
 PRODUCT_COPY_FILES += \
    device/huawei/hws8301l/recovery/res/images/800x1280/battery_01.png:recovery/root/res/images/800x1280/battery_01.png \
