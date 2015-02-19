@@ -1,0 +1,754 @@
+# Copyright (C) 2008 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+import /init.via.rc
+
+on early-init
+    # See storage config details at http://source.android.com/tech/storage/
+    # DTS2012042006294 zhouhu zkf58287 20120522 begin
+    export SECONDARY_STORAGE /storage/sdcard1
+    # DTS2012042006294 zhouhu zkf58287 20120522 end
+    # DTS2012112900271 w00177577 20121129 begin
+    # DTS2013041609876 dongwei 20130423 begin
+    mkdir /mnt/shell 0710 shell shell
+    # DTS2013041609876 dongwei 20130423 end
+    mkdir /storage 0555 root sdcard_r
+    mkdir /mnt/shell/emulated 0700 shell shell
+    mkdir /storage/emulated 0555 root root
+
+    export EXTERNAL_STORAGE /storage/emulated/0
+    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export EMULATED_STORAGE_TARGET /storage/emulated
+
+    # Support legacy paths
+    symlink /storage/emulated/0 /sdcard
+    symlink /storage/emulated/0 /mnt/sdcard
+    symlink /storage/emulated/0 /storage/sdcard0
+    symlink /mnt/shell/emulated/0 /storage/emulated/0
+    # DTS2012112900271 w00177577 20121129 end
+
+    #DTS2014050805761: Begin, by x00220133 for STC failure
+    symlink /storage/sdcard1 /sdcard2
+    symlink /storage/sdcard1 /mnt/sdcard2
+    symlink /storage/sdcard1 /extsd
+    symlink /storage/sdcard1 /mnt/extsd
+    symlink /storage/sdcard1 /mnt/sdcard_ext
+    symlink /storage/sdcard1 /mnt/ext_sdcard
+    ##DTS2014050805761: End, by x00220133 for STC failure
+
+# create Ext SDcard mountpoint
+    mkdir /mnt/media_rw 0700 media_rw media_rw
+    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
+    mkdir /storage/sdcard1 0700 root root
+    mkdir /mnt/media_rw/usbotg 0700 media_rw media_rw
+    mkdir /storage/usbotg 0700 root root
+
+on fs
+    setprop ro.crypto.fuse_sdcard true
+    
+on post-fs-data
+    mkdir /data/media 0770 media_rw media_rw
+    #/*Begin DTS2014021300778  Added by c00217097 for encrypt function, 2014/3/13*/
+    # we will remap this as /mnt/sdcard with the sdcard fuse tool
+    mkdir /data/share 0770 media_rw media_rw
+    chown media_rw media_rw /data/share
+    chown media_rw media_rw /data/share/0
+    chmod 0775 /data/share/0
+    #/*End DTS2014021300778  Added by c00217097 for encrypt function, 2014/3/13*/
+    
+on early-boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
+on boot
+#     mkdir /data/peers 0700 root system
+#     mount tmpfs tmpfs /data/peers mode=0700,gid=1000
+#     chown radio radio /data/peers
+#add by z00206003 begin 
+#   chmod 644 /system/ump.ko
+#   insmod /system/ump.ko
+    chmod 666 /dev/ump
+    chown system.graphics /dev/ump
+# DTS2014010808395 x00186492 20140108 begin
+    chmod 644 /d/mali0/memory_usage
+# DTS2014010808395 x00186492 20140108 begin
+#   chmod 644 /system/mali.ko
+#   insmod /system/mali.ko
+    chmod 666 /dev/mali
+    chown system.graphics /dev/mali
+
+
+    #/*ICOS1.2-001-012,Porting:ION memory allocator,DTS:DTS2013042002140,Author:jiangxiaowei 00207786,beggin*/
+    chmod 664 /dev/ion
+    #/*ICOS1.2-001-012,Porting:ION memory allocator,DTS:DTS2013042002140,Author:jiangxiaowei 00207786,end*/
+#add by z00206003 end
+
+    #maoshunli
+    chmod 777 /dev/mtd/mtd1
+
+    #liaojimao
+
+    chmod 777 /dev/HisiGE
+    #Begin:DTS2014042106826 midified by l00169665 20140421 for cts
+    chmod 770 /dev/graphics/fb0
+    #End:DTS2014042106826 midified by l00169665 20140421 for cts
+    chown system graphics /dev/graphics/fb0
+    chmod 777 /dev/galcore
+    chmod 777 /dev/graphics/galcore
+
+    #caoyanhua
+	chown system system /sys/class/leds/lcd_backlight0/brightness
+	chmod 664 /sys/class/leds/lcd_backlight0/brightness
+
+	#kf55108
+	chown system system /sys/class/leds/red/delay_on
+	chown system system /sys/class/leds/red/delay_off
+	chown system system /sys/class/leds/green/delay_on
+	chown system system /sys/class/leds/green/delay_off
+	chown system system /sys/class/leds/blue/delay_on
+	chown system system /sys/class/leds/blue/delay_off
+
+    
+    #j00179721
+    mkdir /data/k3_camera/
+    chown media audio /data/k3_camera/
+    chmod 774 /data/k3_camera/
+
+    #j64722
+    chmod 770 /dev/hifi_misc
+	chown root audio /dev/hifi_misc
+    chmod 777 /dev/android_usb_enable
+
+    chmod 770 /proc/hifidsp/hifi
+    chown root audio /proc/hifidsp/hifi
+    chmod 770 /proc/hpcm/status
+    chown root audio /proc/hpcm/status
+    chmod 770 /proc/adigital/format
+    chown root audio /proc/adigital/format
+    chmod 770 /proc/adigital/status
+    chown root audio /proc/adigital/status
+    
+    #s00107748
+    chmod 777 /dev/k3_batterymisc
+    #kf29248
+    chmod 777 /dev/spi3_hisipmu
+    
+    chmod 0660 /dev/tfa9887
+
+    chmod 755 /system/bin/busybox
+    chmod 755 /system/bin/test_rtc
+    chmod 755 /system/bin/ecall
+    chmod 755 /system/bin/conntrack
+    
+    #add for audio tool
+    chmod 777 /dev/spi3_misc
+    chmod 777 /system/bin/audioRegctl
+    chmod 777 /proc/audioChannel/status
+
+    #add for audio acoustic test
+    chmod 777 /proc/HiAcoustic/control
+    chmod 777 /proc/HiAcoustic/threshold
+    #modify by wuxuecheng
+
+    # add by c126562 start
+    mkdir /data/misc/wifi 0770 wifi wifi
+    chown wifi wifi /data/misc/wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    chown wifi wifi /data/misc/wifi/p2p_supplicant.conf
+    chmod 0660 /data/misc/wifi/p2p_supplicant.conf
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+    setprop wifi.interface wlan0
+    # add by c126562 end
+
+    setprop ro.audio.analogMIC 1
+    setprop ro.audio.dobuleMIC 1
+    setprop ro.opengles.version 131072
+
+    #add by qizuyong KF23847, 2010-8-17
+    #Begin: DTS2014032509116 modified by g00217091 for call PP API return PP_DWL_ERROR
+    #revise by c00220250 for dts2014010911112, 2014-01-15 begin
+    chmod 660 /dev/video0
+    #Begin:DTS2014042106826 midified by l00169665 20140421 for cts
+    chmod 660 /dev/hx170dec
+    #End:DTS2014042106826 midified by l00169665 20140421 for cts
+    chmod 660 /dev/hx280enc
+    #Begin:DTS2014042106826 midified by l00169665 20140421 for cts
+    chmod 660 /dev/memalloc
+    #End:DTS2014042106826 midified by l00169665 20140421 for cts
+    chmod 777 /dev/gralloc_pmem
+    chmod 777 /dev/camera_pmem
+
+	chown system camera /dev/video0
+	chown system camera /dev/hx170dec
+	chown system camera /dev/hx280enc
+    chown system camera /dev/memalloc
+    #revise by c00220250 for dts2014010911112, 2014-01-15 end 
+    #End: DTS2014032509116 modified by g00217091 for call PP API return PP_DWL_ERROR
+    
+    #OverlayCompose:
+    chmod 777 /dev/overlay_pmem
+
+    #seceng driver begin. added by z00212134
+    chmod 777 /dev/k3v2-seceng
+    #seceng driver end. added by z00212134
+
+
+
+    #add by ykf63300 for video stablization, 2012-03-27
+    chmod 666 /dev/akm8975_aot
+    chmod 666 /dev/akm8975_dev
+    chmod 660 /dev/input/event0
+    chmod 660 /dev/input/event1
+    chmod 660 /dev/input/event2
+    chmod 660 /dev/input/event3
+    chmod 660 /dev/input/event4
+    chmod 660 /dev/input/event5
+    chmod 660 /dev/input/event6
+    chmod 660 /dev/input/event7
+    chmod 660 /dev/input/event8
+    chmod 660 /dev/input/event9
+    chmod 660 /dev/input/event10
+
+    #add by j00140427 2011-12-15
+    #revise by c00220250 for dts2014010911112, 2014-01-15 begin
+    chmod 660 /dev/video19
+	chown system camera /dev/video19
+    #revise by c00220250 for dts2014010911112, 2014-01-15 end
+
+
+
+
+on boot1
+    #add by c00166660 2011-12-16
+#    chmod 777 /dev/audience_es305
+#    chmod 777 /dev/tpa2028_l
+#    chmod 777 /dev/tpa2028_r
+#    chmod 777 /dev/tpa6132
+#    chmod 777 /dev/spk_5vboost
+#    chmod 777 /dev/boardid_dev
+     #Begin:DTS2014042106826 midified by l00169665 20140421 for cts
+     chmod 770 /dev/ttyAMA2
+     chmod 700 /dev/log/exception
+     chmod 700 /dev/log/jank
+     #End:DTS2014042106826 midified by l00169665 20140421 for cts
+     chown root system /dev/ttyAMA2
+
+    #add by A00165503
+    #used by RIL
+    chmod 660 /dev/appvcom
+    chown radio radio /dev/appvcom
+    chmod 660 /dev/appvcom1
+    chown radio radio /dev/appvcom1
+    #used by logtool&projcetMenu
+    chmod 660 /dev/appvcom2
+    chown system system /dev/appvcom2
+    #used by atcmdserver
+    chmod 660 /dev/appvcom3
+    #usd by audioRIL
+    chmod 660 /dev/appvcom4
+    chown media media /dev/appvcom4
+    #used by RIL
+    chmod 660 /dev/appvcom5
+    chown radio radio /dev/appvcom5
+    chmod 660 /dev/appvcom6
+    chown radio radio /dev/appvcom6
+    #used by atcmdserver
+    chmod 660 /dev/appvcom7
+    #used by ProjectMenu
+    chmod 660 /dev/appvcom8
+    chown system system /dev/appvcom8
+    #used by AGPS
+    chmod 660 /dev/appvcom9
+    #used by RIL
+    chmod 660 /dev/appvcom10
+    chown radio radio /dev/appvcom10
+    #ISDB
+    chmod 660 /dev/appvcom11
+    #used by aduioRIL
+    chmod 660 /dev/appvcom12
+    chown media media /dev/appvcom12
+    #used by RIL
+    chmod 660 /dev/appvcom13
+    chown radio radio /dev/appvcom13
+    chmod 660 /dev/appvcom14
+    chown radio radio /dev/appvcom14
+    #reserved
+    chmod 660 /dev/appvcom15
+    chmod 660 /dev/appvcom16
+    chmod 660 /dev/appvcom17
+    chmod 660 /dev/appvcom18
+    chmod 660 /dev/appvcom19
+    chmod 660 /dev/appvcom20
+    chmod 660 /dev/appvcom21
+    chmod 660 /dev/appvcom22
+    chmod 660 /dev/appvcom23
+    chmod 660 /dev/appvcom24
+    chmod 660 /dev/appvcom25
+    chmod 660 /dev/appvcom26
+    chmod 660 /dev/appvcom27
+    #used by modemlogcat
+    chmod 660 /dev/appvcomTLLOG
+    #used by system_server
+    chmod 660 /dev/appvcomERRLOG
+    chown root system /dev/appvcomERRLOG
+    chmod 660 /dev/misp_cdev
+    chown system camera /dev/misp_cdev
+    #used by modemlogcat & atcmdserver use appvcomLOG
+    chmod 660 /dev/appvcomLOG
+    chmod 660 /dev/appvcomLOG1
+  
+# DTS2014021302618 j00174725 20140217 begin
+	chown system system /proc/portcfg	
+# DTS2014021302618 j00174725 20140217 end	
+	
+    #add by c58721
+    chmod 777 /system/usr/keychars/h2w_headset.kcm.bin
+    chmod 777 /system/usr/keychars/k3_keypad.kcm.bin
+    chmod 777 /system/usr/keychars/qwerty2.kcm.bin
+    chmod 777 /system/usr/keychars/qwerty.kcm.bin
+
+    chmod 770 /dev/rtc0
+
+    #add by d59977
+    chmod 770 /system/bin/gpsdeamon
+    chmod 777 /dev/ttyAMA3
+	chmod 775 /data/gps
+    chmod 770 /data/gps/log
+
+    #add by w00187765
+    mkdir /data/dumplog
+    chmod 775 /data/dumplog
+
+    #add by m00217266
+    mkdir /data/offlinelogs
+    chmod 775 /data/offlinelogs
+    chown radio system /data/offlinelogs
+
+    mkdir /cache/recovery
+    chmod 777 /cache/recovery
+
+    #add by zhangxiaowei zkf26946
+    chmod 640 /dev/cpu_maxprofile
+    chown system system  /dev/cpu_maxprofile
+    chmod 640 /dev/cpu_minprofile
+    chown system system  /dev/cpu_minprofile
+    chmod 640 /dev/cpu_profile_block
+    chown system system  /dev/cpu_profile_block
+    chmod 640 /dev/cpu_profile_safe
+    chown system system  /dev/cpu_profile_safe
+    chmod 640 /dev/gpu_maxprofile
+    chown system system  /dev/gpu_maxprofile
+    chmod 640 /dev/gpu_minprofile
+    chown system system  /dev/gpu_minprofile
+    chmod 640 /dev/gpu_profile_block
+    chown system system  /dev/gpu_profile_block
+    chmod 640 /dev/gpu_profile_safe
+    chown system system  /dev/gpu_profile_safe
+    chmod 640 /dev/ddr_maxprofile
+    chown system system  /dev/ddr_maxprofile
+    #DTS2014032107186 dongwei 20140324 begin
+    chmod 770 /dev/ddr_minprofile
+    chown system camera /dev/ddr_minprofile
+    #DTS2014032107186 dongwei 20140324 end
+    chmod 640 /dev/ddr_profile_block
+    chown system system  /dev/ddr_profile_block
+    chmod 640 /dev/ddr_profile_safe
+    chown system system  /dev/ddr_profile_safe
+    chmod 640 /dev/cpu_number_lock
+    chown system system  /dev/cpu_number_lock
+    chmod 640 /dev/cpu_number_safe
+    chown system system  /dev/cpu_number_safe
+    chmod 640 /dev/cpu_number_max
+    chown system system  /dev/cpu_number_max
+    chmod 640 /dev/cpu_number_min
+    chown system system  /dev/cpu_number_min
+    chmod 640 /dev/ipps_policy
+    chown system system  /dev/ipps_policy
+#gps
+	chmod 777 data/gps/gpsconfig_gpio49.xml
+	chmod 777 data/gps/gpsconfig_gpio3.xml
+    chown system system /sys/class/gpio/gpio3/value
+    chown system system /sys/class/gpio/gpio23/value
+
+#DTS2013113001048 w00122048 mod begin
+    chmod 660 /dev/ttyAMA3
+    chown bluetooth bluetooth /dev/ttyAMA3
+
+# g00124340 bluetooth power up/down interface
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chmod 660 /sys/class/rfkill/rfkill0/state
+
+# g00124340 bluesleep start/stop interface
+    chown bluetooth bluetooth /proc/bluetooth/sleep/proto
+    chmod 664 /proc/bluetooth/sleep/proto
+#/*begin DTS2012121700943 sunlei skf62518 2012-17-12*/
+    chown bluetooth bluetooth /proc/bluetooth/sleep/btwrite
+    chmod 664 /proc/bluetooth/sleep/btwrite
+#/*end DTS2012121700943 sunlei skf62518 2012-17-12*/
+#DTS2013092506993  add for bluetooth power up sequence by w00122048 begin
+    chown bluetooth bluetooth /proc/bluetooth/sleep/btwake
+    chmod 664 /proc/bluetooth/sleep/btwake
+#DTS2013092506993  add for bluetooth power up sequence by w00122048 end
+#DTS2013113001048 w00122048 mod end
+
+# zkf55108 2011/11/3 add begin
+    #lis3dhtr
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0018/enable
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0018/pollrate_ms
+	#lsm330
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-001e/enable
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-001e/pollrate_ms
+	chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-001e/accl_data
+	chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-001d/enable
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-001d/pollrate_ms
+	chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-001d/accl_data
+	chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-001e/calibrate
+	chown system system /sys/bus/i2c/devices/3-001e/calibrate
+	chown system system /sys/bus/i2c/devices/3-001e/calibrate_status
+    #adxl346
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-001c/enable
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-001c/pollrate_ms
+    #mma8452
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0053/enable
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0053/pollrate_ms
+    #l3g4200d
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0068/enable_device
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0068/pollrate_ms
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0068/enable_selftest
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0068/range
+    #apds990x skf62518
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0039/ps_enable
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0039/enable_ps_sensor
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0039/enable_als_sensor
+#DTS2014021300632 add for distance sensor by x00267953 begin
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0039/enable_ds_sensor
+#DTS2014021300632 add for distance sensor by x00267953 end
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0039/als_poll_delay
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0039/pdata_value
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0039/cdata_value
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0039/rdata_value
+    #isl29044
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0044/enable_ps_sensor
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0044/enable_als_sensor
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0044/als_poll_delay
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0044/als_show_raw
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0044/ps_show_raw
+    #l3g4200d
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-006a/enable_device
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-006a/pollrate_ms
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-006a/enable_selftest
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-006a/range
+    chown system system /sys/bus/i2c/devices/3-006b/enable_device
+    chown system system /sys/bus/i2c/devices/3-006b/pollrate_ms
+    chown system system /sys/bus/i2c/devices/3-006b/enable_selftest
+    chown system system /sys/bus/i2c/devices/3-006b/range
+    chown system system /sys/bus/i2c/devices/3-006b/selftest_status
+	#RGB sensor
+    #chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0010/ps_enable
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0010/als_rgb_value
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0010/enable_als_sensor
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0010/als_poll_delay
+    chown system system /sys/devices/platform/dw-i2c.3/i2c-3/3-0010/als_color_value
+# zkf55108 2011/11/3 add end
+#/*BEGIN <DTS2014032101290>  add acc calibrate 2014/3/21 */
+    chown system system /sys/g_sensor/calibrate
+#/*END <DTS2014032101290>   add acc calibrate 2014/3/21 */
+      #ad7146
+      chown system system /sys/bus/i2c/devices/3-002c/enable
+      chown system system /sys/bus/i2c/devices/3-002c/reg_write
+      chown system system /sys/bus/i2c/devices/3-002c/cap_hw_calibrate
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_policy
+#    chown system system /sys/devices/platform/k3_dev_lcd/cabc_mode
+#hall
+    chown system system /sys/bus/platform/devices/hall_platform.0/enable_hall_sensor
+    chown system system /sys/devices/platform/huawei_tp_color/tp_color_info
+# z00181527 2012/04/10 add begin
+#	chown system system /sys/devices/platform/k3_fb.196609/frc_state
+# z00181527 2012/04/10 add end
+
+# c00182334 2012/04/19 add begin
+#        chown system system /sys/devices/platform/k3_fb.196609/sbl_lsensor_state
+# c00182334 2012/04/19 add end
+    # DTS2013092904737 l00186420 20131012 begin
+    chown system system /sys/devices/platform/bcm4329_wlan.1/wifi_debug_level
+    # DTS2013092904737 l00186420 20131012 end
+    chown system system /sys/module/bcmdhd/parameters/dhd_console_ms
+
+#camera
+   chown system system /sys/class/torch/torch_led/lightness
+
+# kf62518 2012/03/07 begin
+    chown system system /sys/devices/platform/huawei_sensor/acc_input
+    chown system system /sys/devices/platform/huawei_sensor/akm_input
+    chown system system /sys/devices/platform/huawei_sensor/als_input
+    chown system system /sys/devices/platform/huawei_sensor/gyro_input
+    chown system system /sys/devices/platform/huawei_sensor/ps_input
+    chown system system /sys/devices/platform/huawei_sensor/ori_input
+    chown system system /sys/devices/platform/huawei_sensor/acc_info
+    chown system system /sys/devices/platform/huawei_sensor/akm_info
+    chown system system /sys/devices/platform/huawei_sensor/als_info
+    chown system system /sys/devices/platform/huawei_sensor/gyro_info
+    chown system system /sys/devices/platform/huawei_sensor/ps_info
+    chown system system /sys/devices/platform/huawei_sensor/akm_selfTest
+    chown system system /sys/devices/platform/huawei_sensor/gyro_selfTest
+    chown system system /sys/devices/platform/huawei_sensor/gyro_exist
+    chown system system /sys/devices/platform/huawei_sensor/hw_cap
+    chown system system /sys/devices/platform/huawei_sensor/cap_info
+#camera
+ 	chown system system /sys/class/torch/torch_led/lightness
+# kf62518 end
+    chown system system /proc/touchscreen/rawdata
+    chown system system /sys/bus/platform/devices/huawei_touch/calibrate
+    chown system system /sys/bus/platform/devices/huawei_touch/touch_chip_info
+    chown system system /sys/bus/platform/devices/huawei_touch/touch_glove
+    chown system system /sys/bus/platform/devices/huawei_touch/hand_detect
+    chown system system /sys/bus/platform/devices/huawei_touch/loglevel
+    chown system system /sys/bus/platform/devices/huawei_touch/touch_mmi_test
+    chown system system /sys/bus/platform/devices/huawei_touch/touch_sensitivity
+    chown system system /sys/bus/platform/devices/huawei_touch/touch_window
+    chown system system /sys/bus/platform/devices/huawei_touch/fw_update_sd
+
+    chown radio system /sys/devices/platform/k3_fb.1/lcd_mipi_freq
+    chmod 664 /sys/devices/platform/k3_fb.1/lcd_mipi_freq
+    
+# add by z36904 for cts
+    chown system system /sys/devices/platform/k3_hdmi.0/edid
+    chown system system /sys/devices/platform/k3_hdmi.0/code
+    chown system system /sys/devices/platform/k3_hdmi.0/manualset
+    chown system system /sys/devices/platform/k3_hdmi.0/s3d
+    chown system system /sys/devices/platform/k3_hdmi.0/dst
+    chown system system /sys/devices/platform/k3_hdmi.0/hpd
+    chown system system /sys/devices/platform/k3_hdmi.0/hdcp
+    chown system system /sys/devices/platform/k3_hdmi.0/reset
+    chown system system /sys/devices/platform/k3_hdmi.0/reg
+    chown system system /sys/devices/platform/k3_hdmi.0/connected
+    chown system system /sys/devices/platform/k3_hdmi.0/s3dsupport
+    chown system system /sys/devices/platform/k3_hdmi.0/alledid
+    chown system system /sys/devices/platform/k3_hdmi.0/audiosupport
+    chown media system /sys/devices/platform/k3_hdmi.0/bufisfree
+    exec /system/bin/gpsdeamon
+
+# DTS2014010402457 b00260479 20140106 for mutex_service cts begin
+    chown system system /sys/devices/platform/hisi_mutex_service/service_start
+    chown system system /sys/devices/platform/hisi_mutex_service/service_stop
+    chown system system /sys/devices/platform/hisi_mutex_service/notify_preempt_msg_mirror
+    chown system system /sys/devices/platform/hisi_mutex_service/notify_preempt_msg_wifi_display    
+    chown system system /sys/devices/platform/hisi_mutex_service/notify_preempt_msg_hmp
+    chown system system /sys/devices/platform/hisi_mutex_service/notify_app_alive_mirror
+    chown system system /sys/devices/platform/hisi_mutex_service/notify_app_alive_wifi_display    
+    chown system system /sys/devices/platform/hisi_mutex_service/notify_app_alive_hmp         
+# DTS2014010402457 b00260479 20140106 for mutex_service cts end
+
+# /* < DTS2014022110567 , modify for primary external storage use sdcardfs, l00202565 20140312 begin */
+# create virtual SD card at /mnt/sdcard, based on the /data/media directory
+#internal sdcard cant not mount modify by w00177577 begin
+#service sdcard /system/bin/sdcard /data/share /mnt/shell/emulated/ 1015 1015
+#    class main
+#service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/share /mnt/shell/emulated
+#   class main
+#   disabled
+#internal sdcard cant not mount modify by w00177577 end
+# /* DTS2014022110567 , modify for primary external storage use sdcardfs, l00202565 20140312 end> */
+
+#/*<DTS2014012002489  anzhen 00210929 20140118 begin*/
+service fuse_sdcard1rw /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/sdcard1 /storage/sdcard1
+   class late_start
+   disabled
+
+#z00241656 add begin  
+service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
+   class late_start
+   disabled
+#z00241656 add end
+#/* DTS2014012002489 anzhen 00210929 20140118 end>*/
+
+service fuse_usbotg /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/usbotg /storage/usbotg
+   class late_start
+#/*<DTS2014070300408  s00273645 20140715 begin*/
+   disabled
+#/* DTS2014070300408  s00273645 20140715 end>*/
+
+service tcp_mw3 /system/bin/mw3
+    class main
+    user root
+    oneshot
+
+# DTS2012100901508  h00206996 20121009 begin, enable zram
+on swapfile_create
+    class_start swapfile_create
+service create_swapfile /system/bin/sh /system/etc/memsave.sh
+    class swapfile_create
+    user root
+    group root
+    oneshot
+# DTS2012100901508  h00206996 20121009 end
+
+
+service wpa_supplicant /system/bin/wpa_supplicant -ddd  \
+	-iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin
+    class main
+    socket wpa_wlan0 dgram 660 wifi wifi
+    disabled
+    oneshot
+
+service p2p_supplicant /system/bin/wpa_supplicant -ddd \
+	-iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -puse_multi_chan_concurrent=1 -N \
+	-ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -e/data/misc/wifi/entropy.bin -puse_p2p_group_interface=1use_multi_chan_concurrent=1 
+    class main
+    socket wpa_wlan0 dgram 660 wifi wifi
+    disabled
+    oneshot
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
+service dhcpcd_p2p /system/bin/dhcpcd -aABKL
+    class main
+    disabled
+    oneshot
+
+service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
+#DTS2014010305928  z00182537  add begin
+service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+#DTS2014010305928  z00182537 add end
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+service iprenew_bnep0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+#  add by c126562 end
+
+service pppd_gprs1 /system/bin/pppd call gprs1
+   user root
+   group radio cache inet misc
+   disabled
+   oneshot
+
+service pppd_gprs2 /system/bin/pppd call gprs2
+   user root
+   group radio cache inet misc
+   disabled
+   oneshot
+
+service pppd_gprs3 /system/bin/pppd call gprs3
+   user root
+   group radio cache inet misc
+   disabled
+   oneshot
+#DTS2014011605076 h00180725 start
+mkdir /data/pppd_via 0770 radio system
+
+service pppd_via /system/bin/pppd_via file /data/pppd_via/options
+    user root
+    group radio cache inet misc vpn
+    disabled
+    oneshot
+#DTS2014011605076 h00180725 end
+
+#add by d59977
+service gpsd  /system/bin/glgps -c /data/gps/gpsconfig.xml
+    socket gps seqpacket 660 root root
+    class main
+    user root
+    group system
+    disabled
+
+service glgpscl  /system/bin/glgpscl -c /data/gps/gpsconfig.xml
+    socket gps seqpacket 660 root root
+    class main
+    user root
+    group system
+    disabled
+
+# zkf55108 2011/11/10 add begin
+#service akm8975 /system/bin/akm8975 -m 3
+#    class main
+#    user system
+#    disabled
+#    oneshot
+# zkf55108 2011/11/10 add end
+
+#service klog /system/etc/klog.sh
+#    class main
+#    user root
+# skf62518 2012/2/9 for ProximitySensor settings begin
+on property:sys.proximitysensor.state=0
+    write /sys/devices/platform/dw-i2c.0/i2c-0/0-0039/ps_enable 0
+
+on property:sys.proximitysensor.state=1
+    write /sys/devices/platform/dw-i2c.0/i2c-0/0-0039/ps_enable 1
+
+	
+#/*<DTS2013071000598 yangshizheng 00102627 20130710 begin*/
+on property:persist.sys.primarysd=*
+    exec /system/bin/preparesd.sh
+#/* DTS2013071000598 yangshizheng 00102627 end>*/
+
+#DTS2013092407907 xuwenfang 2013-09-24 begin
+service server_agent /system/bin/server_agent
+  class main
+  user root
+  group root
+  disabled
+
+on property:sys.server_agent_onoff=1
+  start server_agent
+on property:sys.server_agent_onoff=0
+  stop server_agent
+
+#DTS2013092407907 xuwenfang 2013-09-24 end
+
+#DTS2012122601935 j00161244 2012/12/26 add huawei accelerator support begin
+service acceleratord /system/xbin/acceleratord
+  class main
+  user root
+  group root
+  disabled
+
+on property:ro.config.hw_acceleratord_onoff=1
+  start acceleratord
+#DTS2012122601935 j00161244 2012/12/26 add huawei accelerator support end
+#/*<DTS2014010909796 anzhen 00210929 20140109 begin*/
+on property:persist.sys.primarysd=*
+    exec /system/bin/preparesd.sh
+#/* DTS2014010909796 anzhen 00210929 20140109 end>*/
+
+#/*Begin <> add by x00267953 for TP glove mode switcher 2014-03-13*/
+on property:persist.sys.tp.glove.mode=1
+    write sys/touchscreen/cyttsp5_mt.main_ttsp_core/touch_glove 1
+
+on property:persist.sys.tp.glove.mode=0
+    write sys/touchscreen/cyttsp5_mt.main_ttsp_core/touch_glove 0
+#/*End <> add by x00267953 for TP cover mode switcher 2014-03-13*/
