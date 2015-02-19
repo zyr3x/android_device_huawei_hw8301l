@@ -1,12 +1,12 @@
-## Specify phone tech before including full_phone
-$(call inherit-product, vendor/cm/config/telephony.mk)
+# bootanimation target
+TARGET_SCREEN_HEIGHT := 1920
+TARGET_SCREEN_WIDTH := 1080
 
-# Boot animation
-TARGET_SCREEN_HEIGHT := 1280
-TARGET_SCREEN_WIDTH := 800
+# Release name
+PRODUCT_RELEASE_NAME := P7-L10
 
 # Inherit some common CM stuff.
-$(call inherit-product, vendor/cm/config/common_mini_tablet_wifionly.mk)
+$(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
 # Inherit device configuration
 $(call inherit-product, device/huawei/hws8301l/device_hws8301l.mk)
@@ -15,11 +15,7 @@ $(call inherit-product, device/huawei/hws8301l/device_hws8301l.mk)
 PRODUCT_DEVICE := hws8301l
 PRODUCT_NAME := cm_hws8301l
 PRODUCT_BRAND := huawei
-PRODUCT_MODEL := MediaPad M1 8.0
+PRODUCT_MODEL := MEDIAPAD M1 8.0
 PRODUCT_MANUFACTURER := HUAWEI
 
-ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=0
-ADDITIONAL_DEFAULT_PROPERTIES += ro.allow.mock.location=1
-ADDITIONAL_DEFAULT_PROPERTIES += ro.adb.secure=0
-
-
+№PRODUCT_BUILD_PROP_OVERRIDES += PRODUCT_NAME=P7-L10 BUILD_FINGERPRINT="Huawei/P7-L10/hws8301l:4.4.2/HuaweiP7-L10/C00B138SP01:user/ota-rel-keys,release-keys" PRIVATE_BUILD_DESC="P7-L10-user 4.4.2 HuaweiP7-L10 C00B138SP01 ota-rel-keys,release-keys"

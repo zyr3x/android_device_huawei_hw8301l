@@ -1,1 +1,0 @@
-Huawei Mediapad M1
